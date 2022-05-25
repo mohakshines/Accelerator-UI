@@ -24,3 +24,30 @@ export const optionReducer = (
             return state;
     }
 };
+
+export const ymlReducer = (
+    state = {
+        loading: false,
+        yml: [],
+    },
+    action
+) => {
+    switch (action.type) {
+        case "YML_REQUEST":
+            return {
+                loading: true,
+            };
+        case "YML_SUCCESS":
+            return {
+                loading: false,
+                yml: action.payload,
+            };
+        case "YML_FAIL":
+            return {
+                loading: false,
+                error: action.payload,
+            };
+        default:
+            return state;
+    }
+};

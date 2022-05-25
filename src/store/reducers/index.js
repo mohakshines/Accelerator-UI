@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
-import { optionReducer } from "./formReducer"
+import { optionReducer, ymlReducer } from "./formReducer"
 export default combineReducers({
-    options: optionReducer
+    options: optionReducer,
+    yml: ymlReducer
 })

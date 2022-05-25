@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Box, Stepper, Step, StepLabel, Button, Typography, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Grid, Paper, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOptions } from "../../store/actions/formAction"
+import { fetchOptions, fetchYml } from "../../store/actions/formAction"
+import CodeEditor from '@uiw/react-textarea-code-editor';
 
-const steps = ['Select Type', 'Select Frameworks', 'Details'];
+const steps = ['Select Type', 'Select Frameworks', 'Details', 'Choose Setting'];
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -18,16 +19,27 @@ const StepperForm = () => {
     const [activeStep, setActiveStep] = useState(0);
     const dispatch = useDispatch();
     const { options, loading } = useSelector((state) => state.options);
-    const [index, setIndex] = useState()
+    const { yml } = useSelector((state) => state.yml);
+
+    const [index, setIndex] = useState(0)
     const [type, setType] = useState('WEB')
+    const [ymlFile, setYmlFile] = useState()
     const [backend, setBackend] = useState("spring boot")
     const [frontend, setFrontend] = useState("react")
+    const [customizeType, setCustomizeType] = useState('default')
 
     useEffect(() => {
         dispatch(fetchOptions())
+        dispatch(fetchYml())
+
     }, [dispatch])
 
-    // console.log(loading, options)
+    useEffect(() => {
+        if (yml) {
+            setYmlFile(yml)
+        }
+    }, [yml])
+
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -50,15 +62,20 @@ const StepperForm = () => {
         });
         return CapitalizedWords.join(' ');
     }
+    // console.log(options)
 
     useEffect(() => {
-        const index = options.frameworks?.findIndex((item) => item.backend === backend)
-        setIndex(index)
-    }, [backend])
+        if (options?.frameworks) {
+            const index = options.frameworks?.findIndex((item) => item.backend === backend)
+            setIndex(index)
+        }
+    }, [backend, options?.frameworks])
 
+
+    // console.log('ssdsdd', customizeType)
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Box sx={{ width: '60%', height: 300, position: 'relative' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: '150px' }}>
+            <Box sx={{ width: '60%', height: 400, position: 'relative' }}>
                 <Stepper activeStep={activeStep}>
                     {steps.map((label, index) => {
                         const stepProps = {};
@@ -74,10 +91,11 @@ const StepperForm = () => {
                         <Typography sx={{ mt: 2, mb: 1 }}>
                             All steps completed - you&apos;re finished
                         </Typography>
-                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                            <Box sx={{ flex: '1 1 auto' }} />
-                            <Button onClick={handleReset}>Reset</Button>
-                        </Box>
+                        <div style={{ position: 'absolute', bottom: '0', right: '0' }}>
+                            <Paper>
+                                <Button onClick={handleReset}>Reset</Button>
+                            </Paper>
+                        </div>
                     </>
                 ) : (
                     <div >
@@ -118,7 +136,7 @@ const StepperForm = () => {
                                                 <RadioGroup value={frontend} onChange={(e) => setFrontend(e.target.value)} >
                                                     {options && options.frameworks[index]?.frontend.map((val) => {
                                                         return (
-                                                            <FormControlLabel value={val} control={<Radio />} label={capitalize(val)} />
+                                                            <FormControlLabel key={val} value={val} control={<Radio />} label={capitalize(val)} />
                                                         )
                                                     })}
                                                 </RadioGroup>
@@ -130,10 +148,49 @@ const StepperForm = () => {
                             {activeStep === 2 && (
                                 <Box style={{ marginTop: '20px' }}>
                                     <TextField label="Project Name" variant="outlined" fullWidth style={{ marginBottom: '10px' }} />
-                                    <TextField label="Group" variant="outlined" fullWidth style={{ marginBottom: '10px' }} />
+                                    {options && options.frameworks[index]?.form.map((item) => {
+                                        var result = item.replace(/([A-Z])/g, " $1");
+                                        var finaltext = result.charAt(0).toUpperCase() + result.slice(1);
+                                        return (
+                                            <TextField key={finaltext} label={finaltext} variant="outlined" fullWidth style={{ marginBottom: '10px' }} />
+                                        )
+                                    })}
                                 </Box>
 
                         )}
+                            {activeStep === 3 && (
+                                <Box style={{ marginTop: '10px' }}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={6} md={6}>
+                                            <Item>
+                                                {/* <FormLabel><b>Backend</b></FormLabel> */}
+                                                <RadioGroup value={customizeType} onChange={(e) => setCustomizeType(e.target.value)}>
+                                                    <FormControlLabel value="default" control={<Radio />} label="Default" />
+                                                    <FormControlLabel disabled value="customize" control={<Radio />} label="Customize" />
+                                                </RadioGroup>
+                                            </Item>
+                                        </Grid>
+                                        <Grid item xs={6} md={6}>
+                                            <div style={{ overflow: 'hidden' }}>
+                                                <CodeEditor
+                                                    value={ymlFile}
+                                                    language="yml"
+                                                    placeholder="Please enter YML code."
+                                                    onChange={(evn) => setYmlFile(evn.target.value)}
+                                                    padding={15}
+                                                    style={{
+                                                        fontSize: 12,
+                                                        backgroundColor: "black",
+                                                        fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                                                    }}
+                                                    disabled
+                                                // {...editorProps}
+                                                />
+                                            </div>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            )}
 
                         <div style={{ position: 'absolute', bottom: '0' }}>
                             <Paper>
@@ -155,11 +212,12 @@ const StepperForm = () => {
                                 </Button>
                             </Paper>
                             </div>
-                    </div>
-                )
-                }
+                        </div>
+                )}
             </Box >
         </div >
     );
 }
 export default StepperForm
+
+var z = [{ a: 'string' }, { b: 'string' }]
