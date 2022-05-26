@@ -6,6 +6,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+## Docker Command
+```sh 
+docker build --tag react-image .
+docker run --publish 3000:3000 react-image
+```
 ### `npm start`
 
 Runs the app in the development mode.\
