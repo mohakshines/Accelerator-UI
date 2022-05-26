@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOptions, fetchYml } from "../../store/actions/formAction"
 import CodeEditor from '@uiw/react-textarea-code-editor';
+import './StepperForm.css'
 
 const steps = ['Select Type', 'Select Frameworks', 'Details', 'Choose Setting'];
 
@@ -74,8 +75,8 @@ const StepperForm = () => {
 
     // console.log('ssdsdd', customizeType)
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: '150px' }}>
-            <Box sx={{ width: '60%', height: 400, position: 'relative' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: '150px', }}>
+            <Box sx={{ height: 400, position: 'relative' }} className='form'>
                 <Stepper activeStep={activeStep}>
                     {steps.map((label, index) => {
                         const stepProps = {};
@@ -131,7 +132,7 @@ const StepperForm = () => {
                                             </Item>
                                     </Grid>
                                     <Grid item xs={6} md={6}>
-                                            <Item>
+                                            <Item style={{ minHeight: '150px' }}>
                                                 <FormLabel><b>Frontend</b></FormLabel>
                                                 <RadioGroup value={frontend} onChange={(e) => setFrontend(e.target.value)} >
                                                     {options && options.frameworks[index]?.frontend.map((val) => {
@@ -171,7 +172,7 @@ const StepperForm = () => {
                                             </Item>
                                         </Grid>
                                         <Grid item xs={6} md={6}>
-                                            <div style={{ overflow: 'hidden' }}>
+
                                                 <CodeEditor
                                                     value={ymlFile}
                                                     language="yml"
@@ -182,11 +183,13 @@ const StepperForm = () => {
                                                         fontSize: 12,
                                                         backgroundColor: "black",
                                                         fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+                                                        overflowY: 'scroll',
+                                                        maxHeight: '300px'
                                                     }}
                                                     disabled
                                                 // {...editorProps}
                                                 />
-                                            </div>
+
                                         </Grid>
                                     </Grid>
                                 </Box>

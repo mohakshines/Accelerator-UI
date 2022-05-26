@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import { Link } from 'react-router-dom';
 import './Sidebar.css';
 import logo from "./logo.png";
 
@@ -19,19 +18,15 @@ const Sidebar = () => {
                 </div>
                 <img src={logo} height='50px' width='50px' style={{ borderRadius: '20%' }} />
                 <div>
-                    <h1 style={{ color: 'white', fontWeight: 600, letterSpacing: '1px' }}>&nbsp;&nbsp;Aerothon <i>ACCELERATOR</i></h1>
+                    <h1 className='heading'>&nbsp;&nbsp;PROXYZZZ <i>ACCELERATOR</i></h1>
                 </div>
             </div>
             <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-                <div className='navbar-toggle' onClick={showSidebar}>
-                    <div className='cross-icon'>
-                        <CloseIcon />
-                    </div>
+                <CloseIcon onClick={showSidebar} className='cross-icon' />
+                <div className='nav-menu-image'>
+                    <img src={logo} style={{ borderRadius: '20%', marginTop: '20px' }} />
                 </div>
-                <img src={logo} height='150px' width='150px' style={{ borderRadius: '20%', marginTop: '20px' }} />
-                <div>
-                    <h1 style={{ color: 'white', fontWeight: 600, letterSpacing: '1px', fontSize: '4rem' }}>&nbsp;&nbsp;Aerothon <i>ACCELERATOR</i></h1>
-                </div>
+                <h1 className='nav-menu-heading'>&nbsp;&nbsp;PROXYZZZ <i>ACCELERATOR</i></h1>
             </nav>
         </>
     )
