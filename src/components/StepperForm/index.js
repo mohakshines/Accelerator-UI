@@ -81,9 +81,9 @@ const StepperForm = () => {
             'frontend': frontend,
             'form': {}
         }
-        axios.post('http://localhost:8080/api/v1/generate', data, { responseType: 'arraybuffer' })
+        // axios.post('http://localhost:8080/api/v1/generate', data, { responseType: 'arraybuffer' })
         axios({
-            url: 'http://localhost:8080/api/v1/generate',
+            url: 'https://accelerator-generator-backend.herokuapp.com/api/v1/generate',
             data: data,
             method: 'post',
             responseType: 'blob'
