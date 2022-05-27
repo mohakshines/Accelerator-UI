@@ -16,17 +16,17 @@ const Sidebar = () => {
                         <MenuIcon onClick={showSidebar} fontSize='large' />
                     </div>
                 </div>
-                <img src={logo} height='50px' width='50px' style={{ borderRadius: '20%' }} />
+                <img src={logo} height='50px' width='50px' style={{ borderRadius: '20%' }} alt="img" />
                 <div>
-                    <h1 className='heading'>&nbsp;&nbsp;PROXYZZZ <i>ACCELERATOR</i></h1>
+                    <h1 className='heading'>&nbsp;&nbsp;AEROTHON <i>ACCELERATOR</i></h1>
                 </div>
             </div>
             <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
                 <CloseIcon onClick={showSidebar} className='cross-icon' />
                 <div className='nav-menu-image'>
-                    <img src={logo} style={{ borderRadius: '20%', marginTop: '20px' }} />
+                    <img src={logo} style={{ borderRadius: '20%', marginTop: '20px' }} alt="img" />
                 </div>
-                <h1 className='nav-menu-heading'>&nbsp;&nbsp;PROXYZZZ <i>ACCELERATOR</i></h1>
+                <h1 className='nav-menu-heading'>&nbsp;&nbsp;AEROTHON <i>ACCELERATOR</i></h1>
             </nav>
         </>
     )

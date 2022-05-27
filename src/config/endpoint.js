@@ -2,7 +2,7 @@
 
 // console.log(DROPDOWN_URL)
 const endpoint = {
-    dropdown: "https://raw.githubusercontent.com/Amanjainnn/Accelerator-Generator-Metadata/main/metadata.json",
-    yml: "https://raw.githubusercontent.com/Amanjainnn/Accelerator-Generator-Metadata/main/default.yml"
+    dropdown: "https://raw.githubusercontent.com/Amanjainnn/Accelerator-Generator/develop/src/main/resources/metadata.json",
+    yml: "https://raw.githubusercontent.com/Amanjainnn/Accelerator-Generator/develop/src/main/resources/default.yml"
 }
 export { endpoint };

@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchOptions, fetchYml } from "../../store/actions/formAction"
 import CodeEditor from '@uiw/react-textarea-code-editor';
 import './StepperForm.css'
+import DownloadingIcon from '@mui/icons-material/Downloading';
+import axios from 'axios';
 
 const steps = ['Select Type', 'Select Frameworks', 'Details', 'Choose Setting'];
 
@@ -72,8 +74,36 @@ const StepperForm = () => {
         }
     }, [backend, options?.frameworks])
 
+    const handleDownload = async () => {
+        const data = {
+            'appName': 'appname',
+            'backend': backend,
+            'frontend': frontend,
+            'form': {}
+        }
+        axios.post('http://localhost:8080/api/v1/generate', data, { responseType: 'arraybuffer' })
+        axios({
+            url: 'http://localhost:8080/api/v1/generate',
+            data: data,
+            method: 'post',
+            responseType: 'blob'
+        })
+            .then((response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]))
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'file.zip');
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+            },
+                (error) => {
+                    console.log(error);
+                });
+    }
 
-    // console.log('ssdsdd', customizeType)
+
+
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingTop: '150px', }}>
             <Box sx={{ height: 400, position: 'relative' }} className='form'>
@@ -89,12 +119,19 @@ const StepperForm = () => {
                 </Stepper>
                 {activeStep === steps.length ? (
                     <>
-                        <Typography sx={{ mt: 2, mb: 1 }}>
-                            All steps completed - you&apos;re finished
-                        </Typography>
+                        <div className='reset-page'>
+                            <div>
+                                <Typography gutterBottom>
+                                    Click to Download your zip project.
+                                </Typography>
+                                <Button variant="outlined" startIcon={<DownloadingIcon />} onClick={handleDownload} style={{ marginTop: '10px' }}>
+                                    Download
+                                </Button>
+                            </div>
+                        </div>
                         <div style={{ position: 'absolute', bottom: '0', right: '0' }}>
                             <Paper>
-                                <Button onClick={handleReset}>Reset</Button>
+                                <Button onClick={handleReset} size="large" >Reset</Button>
                             </Paper>
                         </div>
                     </>
@@ -187,7 +224,7 @@ const StepperForm = () => {
                                                         maxHeight: '300px'
                                                     }}
                                                     disabled
-                                                // {...editorProps}
+
                                                 />
 
                                         </Grid>
