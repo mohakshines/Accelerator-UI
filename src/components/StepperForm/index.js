@@ -77,35 +77,41 @@ const StepperForm = () => {
     }, [backend, options?.frameworks])
 
     const handleDownload = async () => {
-        setZipLoader(true)
-        const data = {
-            'appName': projectName,
-            'backend': backend,
-            'frontend': frontend,
-            'form': {}
+        if (projectName.trim(" ") === "") {
+            alert("App name is required")
         }
-        // axios.post('http://localhost:8080/api/v1/generate', data, { responseType: 'arraybuffer' })
-        axios({
-            url: 'http://localhost:8080/api/v1/generate',
-            data: data,
-            method: 'post',
-            responseType: 'blob'
-        })
-            .then((response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]))
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', `${projectName}.zip`);
-                document.body.appendChild(link);
-                link.click();
-                link.parentNode.removeChild(link);
-                setZipLoader(false)
-
-            },
-                (error) => {
-                    console.log(error);
+        else {
+            setZipLoader(true)
+            const data = {
+                'appName': projectName,
+                'backend': backend,
+                'frontend': frontend,
+                'form': {}
+            }
+            // axios.post('http://localhost:8080/api/v1/generate', data, { responseType: 'arraybuffer' })
+            axios({
+                url: 'http://localhost:8080/api/v1/generate',
+                data: data,
+                method: 'post',
+                responseType: 'blob'
+            })
+                .then((response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data]))
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', `${projectName}.zip`);
+                    document.body.appendChild(link);
+                    link.click();
+                    link.parentNode.removeChild(link);
                     setZipLoader(false)
-                });
+
+                },
+                    (error) => {
+                        console.log(error);
+                        setZipLoader(false)
+                    });
+        }
+
     }
 
 
