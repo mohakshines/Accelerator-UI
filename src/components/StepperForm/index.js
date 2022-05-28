@@ -7,6 +7,7 @@ import CodeEditor from '@uiw/react-textarea-code-editor';
 import './StepperForm.css'
 import DownloadingIcon from '@mui/icons-material/Downloading';
 import axios from 'axios';
+import { LinearProgress } from '@mui/material';
 
 const steps = ['Select Type', 'Select Frameworks', 'Details', 'Choose Setting'];
 
@@ -29,8 +30,9 @@ const StepperForm = () => {
     const [ymlFile, setYmlFile] = useState()
     const [backend, setBackend] = useState("spring boot")
     const [frontend, setFrontend] = useState("react")
+    const [projectName, setProjectName] = useState('')
     const [customizeType, setCustomizeType] = useState('default')
-
+    const [zipLoader, setZipLoader] = useState(false)
     useEffect(() => {
         dispatch(fetchOptions())
         dispatch(fetchYml())
@@ -75,15 +77,16 @@ const StepperForm = () => {
     }, [backend, options?.frameworks])
 
     const handleDownload = async () => {
+        setZipLoader(true)
         const data = {
-            'appName': 'appname',
+            'appName': projectName,
             'backend': backend,
             'frontend': frontend,
             'form': {}
         }
         // axios.post('http://localhost:8080/api/v1/generate', data, { responseType: 'arraybuffer' })
         axios({
-            url: 'https://accelerator-generator-backend.herokuapp.com/api/v1/generate',
+            url: 'http://localhost:8080/api/v1/generate',
             data: data,
             method: 'post',
             responseType: 'blob'
@@ -92,13 +95,16 @@ const StepperForm = () => {
                 const url = window.URL.createObjectURL(new Blob([response.data]))
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'file.zip');
+                link.setAttribute('download', `${projectName}.zip`);
                 document.body.appendChild(link);
                 link.click();
                 link.parentNode.removeChild(link);
+                setZipLoader(false)
+
             },
                 (error) => {
                     console.log(error);
+                    setZipLoader(false)
                 });
     }
 
@@ -124,9 +130,13 @@ const StepperForm = () => {
                                 <Typography gutterBottom>
                                     Click to Download your zip project.
                                 </Typography>
-                                <Button variant="outlined" startIcon={<DownloadingIcon />} onClick={handleDownload} style={{ marginTop: '10px' }}>
+                                {zipLoader ? (
+                                    <LinearProgress color="primary" />
+                                ) : (<Button variant="outlined" startIcon={<DownloadingIcon />} onClick={handleDownload} style={{ marginTop: '10px' }}>
                                     Download
-                                </Button>
+                                </Button>)
+                                }
+
                             </div>
                         </div>
                         <div style={{ position: 'absolute', bottom: '0', right: '0' }}>
@@ -185,7 +195,7 @@ const StepperForm = () => {
                         )}
                             {activeStep === 2 && (
                                 <Box style={{ marginTop: '20px' }}>
-                                    <TextField label="Project Name" variant="outlined" fullWidth style={{ marginBottom: '10px' }} />
+                                    <TextField onChange={(e) => setProjectName(e.target.value)} label="Project Name" variant="outlined" fullWidth style={{ marginBottom: '10px' }} />
                                     {options && options.frameworks[index]?.form.map((item) => {
                                         var result = item.replace(/([A-Z])/g, " $1");
                                         var finaltext = result.charAt(0).toUpperCase() + result.slice(1);
